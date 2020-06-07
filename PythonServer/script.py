@@ -22,6 +22,6 @@ def deactivatePump():
 
 while True:
     activatePump()
-    time.sleep(0.5)
+    time.sleep(5)
     deactivatePump()
-    time.sleep(0.5)
+    time.sleep(5)
