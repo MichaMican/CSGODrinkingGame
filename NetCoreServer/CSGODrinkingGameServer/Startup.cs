@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CSGODrinkingGameServer.Handler;
+using CSGODrinkingGameServer.Interfaces;
+using CSGODrinkingGameServer.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +28,8 @@ namespace CSGODrinkingGameServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton<IStateHandler, StateHandler>();
+            services.AddSingleton<IArduinoSerial, ArduinoSerial>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
