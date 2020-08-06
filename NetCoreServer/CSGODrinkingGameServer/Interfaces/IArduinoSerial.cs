@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CSGODrinkingGameServer.Interfaces
 {
-    interface IArduinoSerial
+    public interface IArduinoSerial
     {
     }
 }
