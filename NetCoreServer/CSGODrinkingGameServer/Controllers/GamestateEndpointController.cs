@@ -13,17 +13,17 @@ namespace CSGODrinkingGameServer.Controllers
     [Route("")]
     public class GamestateEndpointController : ControllerBase
     {
-        private IStateHandler stateHandler;
+        private IStateHandler _stateHandler;
         public GamestateEndpointController(IStateHandler stateHandler)
         {
-            this.stateHandler = stateHandler;
+            this._stateHandler = stateHandler;
         }
 
         [HttpPost]
         public ActionResult HandlePost([FromBody] CsgoGameStateDto csgoGameState)
         {
 
-            stateHandler.Handle(csgoGameState);
+            _stateHandler.Handle(csgoGameState);
 
             Console.WriteLine("Received");
 

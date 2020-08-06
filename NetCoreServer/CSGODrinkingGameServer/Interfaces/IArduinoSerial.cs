@@ -7,5 +7,6 @@ namespace CSGODrinkingGameServer.Interfaces
 {
     public interface IArduinoSerial
     {
+        void writeToArduino(string value);
     }
 }

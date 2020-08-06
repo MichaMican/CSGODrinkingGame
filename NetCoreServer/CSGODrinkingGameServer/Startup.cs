@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CSGODrinkingGameServer.Handler;
 using CSGODrinkingGameServer.Interfaces;
 using CSGODrinkingGameServer.IO;
+using CSGODrinkingGameServer.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace CSGODrinkingGameServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<Settings>(Configuration.GetSection("Settings"));
             services.AddControllers();
             services.AddSingleton<IStateHandler, StateHandler>();
             services.AddSingleton<IArduinoSerial, ArduinoSerial>();
