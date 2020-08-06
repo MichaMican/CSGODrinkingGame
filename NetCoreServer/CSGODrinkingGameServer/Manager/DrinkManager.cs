@@ -11,10 +11,11 @@ namespace CSGODrinkingGameServer.Manager
     {
         private IArduinoSerial _arduino;
         private Thread currentThread;
-        private List<double> penaltyQueue
+        private List<double> penaltyQueue;
         public DrinkManager(IArduinoSerial arduino)
         {
             _arduino = arduino;
+            penaltyQueue = new List<double>();
         }
 
         public void registerDrinkPenalty(double duration)
