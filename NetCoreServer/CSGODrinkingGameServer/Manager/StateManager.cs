@@ -11,16 +11,14 @@ namespace CSGODrinkingGameServer.Manager
 {
     public class StateManager : IStateHandler
     {
-        private IArduinoSerial _arduino;
         private IDrinkManager _drinkManager;
         private int lastHP;
         private int lastTriggerId;
         private Settings _settings;
-        public StateManager(IOptions<Settings> options, IArduinoSerial arduino, IDrinkManager drinkManager)
+        public StateManager(IOptions<Settings> options, IDrinkManager drinkManager)
         {
             _drinkManager = drinkManager;
             _settings = options.Value;
-            _arduino = arduino;
             //This is intentionaly to high so the first post will update the lastHP to the actual HP without triggering a reset
             lastHP = 200;
             lastTriggerId = -1;
@@ -28,7 +26,6 @@ namespace CSGODrinkingGameServer.Manager
 
         public void Handle(CsgoGameStateDto csgoGameState)
         {
-
             if(csgoGameState.provider.steamid == csgoGameState.player.steamid)
             {
                 var usersHp = csgoGameState.player.state.health;
@@ -37,7 +34,7 @@ namespace CSGODrinkingGameServer.Manager
                     for(int i = lastTriggerId + 1; i<_settings.TriggerThresholds.Count; i++)
                     {
                         var thresh = _settings.TriggerThresholds[i];
-                        if(thresh.hp > usersHp)
+                        if(thresh.hp >= usersHp)
                         {
                             _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
                             lastTriggerId++;
