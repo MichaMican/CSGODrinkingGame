@@ -1,6 +1,7 @@
 ﻿using CSGODrinkingGameServer.Exceptions;
 using CSGODrinkingGameServer.Interfaces;
 using CSGODrinkingGameServer.Models;
+using CSGODrinkingGameServer.Models.Settings;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;

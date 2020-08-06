@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CSGODrinkingGameServer.Handler;
+using CSGODrinkingGameServer.Manager;
 using CSGODrinkingGameServer.Interfaces;
 using CSGODrinkingGameServer.IO;
 using CSGODrinkingGameServer.Models;
@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using CSGODrinkingGameServer.Models.Settings;
 
 namespace CSGODrinkingGameServer
 {
@@ -30,7 +31,8 @@ namespace CSGODrinkingGameServer
         {
             services.Configure<Settings>(Configuration.GetSection("Settings"));
             services.AddControllers();
-            services.AddSingleton<IStateHandler, StateHandler>();
+            services.AddSingleton<IStateHandler, StateManager>();
+            services.AddSingleton<IDrinkManager, DrinkManager>();
             services.AddSingleton<IArduinoSerial, ArduinoSerial>();
         }
 
