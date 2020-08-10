@@ -18,17 +18,22 @@ namespace CSGODrinkingGameServer.Manager
             penaltyQueue = new List<double>();
         }
 
+        public void resetQueue()
+        {
+            penaltyQueue = new List<double>();
+        }
+
         public void registerDrinkPenalty(double duration)
         {
             if (currentThread == null || !currentThread.IsAlive)
             {
-                int durationms = (int)Math.Round(duration * 1000);
-                currentThread = new Thread(() => activatePump(durationms)) { 
+                penaltyQueue.Add(duration);
+                currentThread = new Thread(() => activatePump()) { 
                     //This keeps the Thread running even if registerDrinkPenalty terminates
                     IsBackground = false 
                 };
                 currentThread.Start();
-            } 
+            }
             else
             {
                 //If a penalty is still running the penalty gets saved
@@ -36,11 +41,22 @@ namespace CSGODrinkingGameServer.Manager
             }
         }
 
-        private void activatePump(int duration)
+        private void activatePump()
         {
-            _arduino.writeToArduino("1");
-            Thread.Sleep(duration);
-            _arduino.writeToArduino("0");
+            while(penaltyQueue.Count > 0)
+            {
+                var duration = penaltyQueue[0];
+                penaltyQueue.RemoveAt(0);
+
+                int durationmms = (int)Math.Round(duration * 1000);
+                _arduino.writeToArduino("1");
+                Thread.Sleep(durationmms);
+                _arduino.writeToArduino("0");
+                Thread.Sleep(50);
+            }
+            
         }
+
+        
     }
 }
