@@ -27,7 +27,7 @@ namespace CSGODrinkingGameServer.Controllers
 
             Console.WriteLine("Received");
 
-            return StatusCode(501);
+            return Ok();
         }
     }
 }

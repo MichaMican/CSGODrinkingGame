@@ -20,8 +20,8 @@ namespace CSGODrinkingGameServer.Manager
             {
                 currentThread = new Thread(() => queueHandler())
                 {
-                    //This keeps the Thread running even if registerDrinkPenalty terminates
-                    IsBackground = false
+                    //This will kill the thread if you stop the application
+                    IsBackground = true
                 };
                 currentThread.Start();
             }
@@ -46,11 +46,11 @@ namespace CSGODrinkingGameServer.Manager
 
                 int durationmms = (int)Math.Round(duration * 1000);
                 Console.WriteLine("Starting pump");
-                //_arduino.writeToArduino("1");
+                _arduino.writeToArduino("1");
                 Thread.Sleep(durationmms);
                 Console.WriteLine("Stopping pump");
-                //_arduino.writeToArduino("0");
-                Thread.Sleep(50);
+                _arduino.writeToArduino("0");
+                Thread.Sleep(500);
             }
             
         }
@@ -61,14 +61,21 @@ namespace CSGODrinkingGameServer.Manager
             Console.WriteLine("Starting queue Handling thread");
             while (true)
             {
-                if(penaltyQueue.Count > 0)
+                try
                 {
-                    activatePump();
-                } 
-                else
+                    if (penaltyQueue.Count > 0)
+                    {
+                        activatePump();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Thread HEARTBEAT");
+                        Thread.Sleep(2000);
+                    }
+                }
+                catch(Exception e)
                 {
-                    Console.WriteLine("Thread HEARTBEAT");
-                    Thread.Sleep(2000);
+                    Console.WriteLine("There was an error in the thread - but no worries it got catched | Debug info: " + e.Message);
                 }
             }
         }

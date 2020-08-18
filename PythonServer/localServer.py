@@ -6,7 +6,7 @@ import json
 import threading
 import serial
 
-port = 'COM17'
+port = 'COM3'
 ser = serial.Serial(port, 9600)
 
 # This is important so the write isn't called before the Arduino is ready to receive
@@ -43,6 +43,7 @@ def startServer():
 
 def wait_for_event():
     print('wait_for_event starting')
+    #while true loop so the pump can be activated multiple times
     event_is_set = e.wait()
     print('event set: %s', event_is_set)
     activatePump()

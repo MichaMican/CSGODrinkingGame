@@ -21,7 +21,7 @@ namespace CSGODrinkingGameServer.IO
             _serialPort = new SerialPort();
             _serialPort.PortName = _settings.ArduinoPort;
             _serialPort.BaudRate = 9600;
-            //_serialPort.Open();
+            _serialPort.Open();
         }
 
         public void writeToArduino(string value)

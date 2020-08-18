@@ -13,15 +13,17 @@ namespace CSGODrinkingGameServer.Manager
     {
         private IDrinkManager _drinkManager;
         private int lastHP;
-        private int lastTriggerId;
+        private List<int> hittedThresholds;
         private Settings _settings;
+        private bool died;
         public StateManager(IOptions<Settings> options, IDrinkManager drinkManager)
         {
             _drinkManager = drinkManager;
             _settings = options.Value;
             //This is intentionaly to high so the first post will update the lastHP to the actual HP without triggering a reset
             lastHP = 200;
-            lastTriggerId = -1;
+            hittedThresholds = new List<int>();
+            died = false;
         }
 
         public void Handle(CsgoGameStateDto csgoGameState)
@@ -31,25 +33,44 @@ namespace CSGODrinkingGameServer.Manager
                 var usersHp = csgoGameState.player.state.health;
                 if (lastHP >= usersHp)
                 {
-                    for(int i = lastTriggerId + 1; i<_settings.TriggerThresholds.Count; i++)
+                    foreach(var thresh in _settings.TriggerThresholds)
                     {
-                        var thresh = _settings.TriggerThresholds[i];
-                        if(thresh.hp >= usersHp)
+                        if(!hittedThresholds.Contains(thresh.hp) && thresh.hp >= usersHp)
                         {
                             _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
-                            lastTriggerId++;
+                            hittedThresholds.Add(thresh.hp);
                         }
                     }
+
+                    lastHP = usersHp;
+
                 } 
                 else
                 {
+                    //reset
+                    Console.WriteLine("Resetting");
                     lastHP = csgoGameState.player.state.health;
-                    lastTriggerId = -1;
+                    hittedThresholds.Clear();
+                    died = false;
                 }
             } 
             else
             {
-                //figure out if player is dead (RIP)
+                if (!died)
+                {
+                    foreach (var thresh in _settings.TriggerThresholds)
+                    {
+                        //Gives the player ALL remaining penalties
+                        if (!hittedThresholds.Contains(thresh.hp))
+                        {
+                            _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
+                            hittedThresholds.Add(thresh.hp);
+                        }
+                    }
+                    died = true;
+                    //This will make sure that the a reset is performed when the round restarts
+                    lastHP = -1;
+                }
             }
         }
     }
