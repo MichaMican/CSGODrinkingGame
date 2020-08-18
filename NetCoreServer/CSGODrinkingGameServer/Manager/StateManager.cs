@@ -51,9 +51,6 @@ namespace CSGODrinkingGameServer.Manager
             {
                 //figure out if player is dead (RIP)
             }
-
-            _arduino.writeToArduino("1");
-
         }
     }
 }

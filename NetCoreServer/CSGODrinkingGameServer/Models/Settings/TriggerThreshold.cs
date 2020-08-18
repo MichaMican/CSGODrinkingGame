@@ -7,7 +7,7 @@ namespace CSGODrinkingGameServer.Models.Settings
 {
     public class TriggerThreshold
     {
-        public int hp;
-        public double pumpMultiplicator;
+        public int hp { get; set; }
+        public double pumpMultiplicator { get; set; }
     }
 }

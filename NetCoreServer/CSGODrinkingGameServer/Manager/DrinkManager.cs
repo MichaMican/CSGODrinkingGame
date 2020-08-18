@@ -16,6 +16,15 @@ namespace CSGODrinkingGameServer.Manager
         {
             _arduino = arduino;
             penaltyQueue = new List<double>();
+            if(currentThread == null || !currentThread.IsAlive)
+            {
+                currentThread = new Thread(() => queueHandler())
+                {
+                    //This keeps the Thread running even if registerDrinkPenalty terminates
+                    IsBackground = false
+                };
+                currentThread.Start();
+            }
         }
 
         public void resetQueue()
@@ -25,20 +34,7 @@ namespace CSGODrinkingGameServer.Manager
 
         public void registerDrinkPenalty(double duration)
         {
-            if (currentThread == null || !currentThread.IsAlive)
-            {
-                penaltyQueue.Add(duration);
-                currentThread = new Thread(() => activatePump()) { 
-                    //This keeps the Thread running even if registerDrinkPenalty terminates
-                    IsBackground = false 
-                };
-                currentThread.Start();
-            }
-            else
-            {
-                //If a penalty is still running the penalty gets saved
-                penaltyQueue.Add(duration);
-            }
+            penaltyQueue.Add(duration);
         }
 
         private void activatePump()
@@ -49,14 +45,33 @@ namespace CSGODrinkingGameServer.Manager
                 penaltyQueue.RemoveAt(0);
 
                 int durationmms = (int)Math.Round(duration * 1000);
-                _arduino.writeToArduino("1");
+                Console.WriteLine("Starting pump");
+                //_arduino.writeToArduino("1");
                 Thread.Sleep(durationmms);
-                _arduino.writeToArduino("0");
+                Console.WriteLine("Stopping pump");
+                //_arduino.writeToArduino("0");
                 Thread.Sleep(50);
             }
             
         }
 
-        
+
+        private void queueHandler()
+        {
+            Console.WriteLine("Starting queue Handling thread");
+            while (true)
+            {
+                if(penaltyQueue.Count > 0)
+                {
+                    activatePump();
+                } 
+                else
+                {
+                    Console.WriteLine("Thread HEARTBEAT");
+                    Thread.Sleep(2000);
+                }
+            }
+        }
+
     }
 }
