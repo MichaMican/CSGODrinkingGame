@@ -1,7 +1,16 @@
 # CSGODrinkingGame
-- [What do i need?](#what-do-i-need)
+- [What do i need?](#what-do-i-need-)
 - [How to setup](#how-to-setup)
+  - [1. Set up the Hardware](#1-set-up-the-hardware)
+  - [2. Flash the Arduino](#2-flash-the-arduino)
+  - [3. Setup CSGO](#3-setup-csgo)
+  - [4. Setup the appsettings](#4-setup-the-appsettings)
+  - [5. Start the NetcoreServer](#5-start-the-netcoreserver)
+  - [6. Play the game](#6-play-the-game)
 - [Common problems](#common-problems)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ## What do i need?
 (Don't worry for the links i provide i do **not** use any affiliate link)
