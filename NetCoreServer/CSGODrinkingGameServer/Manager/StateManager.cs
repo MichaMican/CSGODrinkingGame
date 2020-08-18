@@ -28,48 +28,58 @@ namespace CSGODrinkingGameServer.Manager
 
         public void Handle(CsgoGameStateDto csgoGameState)
         {
-            if(csgoGameState.provider.steamid == csgoGameState.player.steamid)
+            if (csgoGameState.map.phase == "gameover")
             {
-                var usersHp = csgoGameState.player.state.health;
-                if (lastHP >= usersHp)
-                {
-                    foreach(var thresh in _settings.TriggerThresholds)
-                    {
-                        if(!hittedThresholds.Contains(thresh.hp) && thresh.hp >= usersHp)
-                        {
-                            _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
-                            hittedThresholds.Add(thresh.hp);
-                        }
-                    }
-
-                    lastHP = usersHp;
-
-                } 
-                else
-                {
-                    //reset
-                    Console.WriteLine("Resetting");
-                    lastHP = csgoGameState.player.state.health;
-                    hittedThresholds.Clear();
-                    died = false;
-                }
-            } 
+                Console.WriteLine("Reset after gameover");
+                lastHP = 200;
+                hittedThresholds.Clear();
+                died = false;
+            }
             else
             {
-                if (!died)
+                if (csgoGameState.provider.steamid == csgoGameState.player.steamid)
                 {
-                    foreach (var thresh in _settings.TriggerThresholds)
+                    var usersHp = csgoGameState.player.state.health;
+                    if (lastHP >= usersHp)
                     {
-                        //Gives the player ALL remaining penalties
-                        if (!hittedThresholds.Contains(thresh.hp))
+                        foreach (var thresh in _settings.TriggerThresholds)
                         {
-                            _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
-                            hittedThresholds.Add(thresh.hp);
+                            if (!hittedThresholds.Contains(thresh.hp) && thresh.hp >= usersHp)
+                            {
+                                _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
+                                hittedThresholds.Add(thresh.hp);
+                            }
                         }
+
+                        lastHP = usersHp;
+
                     }
-                    died = true;
-                    //This will make sure that the a reset is performed when the round restarts
-                    lastHP = -1;
+                    else
+                    {
+                        //reset
+                        Console.WriteLine("Resetting");
+                        lastHP = csgoGameState.player.state.health;
+                        hittedThresholds.Clear();
+                        died = false;
+                    }
+                }
+                else
+                {
+                    if (!died)
+                    {
+                        foreach (var thresh in _settings.TriggerThresholds)
+                        {
+                            //Gives the player ALL remaining penalties
+                            if (!hittedThresholds.Contains(thresh.hp))
+                            {
+                                _drinkManager.registerDrinkPenalty(thresh.pumpMultiplicator * _settings.MaxPumpDuration);
+                                hittedThresholds.Add(thresh.hp);
+                            }
+                        }
+                        died = true;
+                        //This will make sure that the a reset is performed when the round restarts
+                        lastHP = -1;
+                    }
                 }
             }
         }

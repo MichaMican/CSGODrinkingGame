@@ -22,10 +22,22 @@ namespace CSGODrinkingGameServer.Controllers
         [HttpPost]
         public ActionResult HandlePost([FromBody] CsgoGameStateDto csgoGameState)
         {
+            if (csgoGameState == null || csgoGameState.player.state == null || csgoGameState.map == null)
+            {
+                Console.WriteLine("Not ingame");
+                return Ok();
+            }
 
-            _stateHandler.Handle(csgoGameState);
+            Console.WriteLine(csgoGameState.map.phase);
 
-            Console.WriteLine("Received");
+            if (csgoGameState.map.phase == "live" || csgoGameState.map.phase == "gameover")
+            {
+                _stateHandler.Handle(csgoGameState);
+            }
+            else
+            {
+                Console.WriteLine("Not ingame");
+            }
 
             return Ok();
         }

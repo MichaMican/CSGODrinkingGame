@@ -8,6 +8,7 @@ namespace CSGODrinkingGameServer.Models
     public class CsgoGameStateDto
     {
         public ProviderDto provider { get; set; }
+        public MapDto map { get; set; }
         public PlayerDto player { get; set; }
     }
 }
