@@ -9,8 +9,6 @@
   - [6. Play the game](#6-play-the-game)
 - [Common problems](#common-problems)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 
 ## What do i need?
 (Don't worry for the links i provide i do **not** use any affiliate link)
